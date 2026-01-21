@@ -1,238 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Vijju | My Moon</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Happy Birthday Vijju 🎀</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  <!-- GOOGLE FONTS -->  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">  <style>
+    body{
+      margin:0;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+      color:#fff;
+      overflow-x:hidden;
+    }
 
-    <style>
-        :root {
-            --deep-purple: #1b1633;
-            --light-purple: #2b2450;
-            --silver: #e0e0e0;
-            --glow: rgba(255, 255, 255, 0.2);
-        }
+    section{
+      padding:90px 20px;
+      text-align:center;
+    }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* BEAUTIFUL TEXT STYLES */
+    .love-title{
+      font-family:'Playfair Display',serif;
+      font-size:3.2rem;
+      letter-spacing:1px;
+      background:linear-gradient(90deg,#ffd6e8,#ffffff,#ffc0cb);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      animation:glow 3s ease-in-out infinite;
+    }
 
-        body {
-            background: radial-gradient(circle at center, var(--light-purple) 0%, var(--deep-purple) 100%);
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
-            height: 100vh;
-        }
+    .love-sub{
+      font-size:1.2rem;
+      opacity:.9;
+      margin-top:14px;
+      animation:fadeUp 2s ease;
+    }
 
-        /* Twinkling Star Canvas */
-        #star-canvas {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-        }
+    @keyframes glow{
+      0%,100%{text-shadow:0 0 15px rgba(255,192,203,.4)}
+      50%{text-shadow:0 0 30px rgba(255,255,255,.7)}
+    }
 
-        /* Password Overlay */
-        #login-overlay {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    @keyframes fadeUp{
+      from{opacity:0;transform:translateY(20px)}
+      to{opacity:1;transform:translateY(0)}
+    }
 
-        .pass-input {
-            background: transparent;
-            border: none;
-            border-bottom: 2px solid white;
-            color: white;
-            font-size: 1.8rem;
-            text-align: center;
-            outline: none;
-            font-family: 'Cinzel', serif;
-            letter-spacing: 5px;
-            width: 300px;
-            margin-top: 20px;
-        }
+    /* CARDS */
+    .cards{
+      display:flex;
+      gap:25px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top:40px;
+    }
 
-        /* Main Desktop Content */
-        .hero {
-            position: relative;
-            z-index: 1;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 10%;
-            visibility: hidden; /* Shown after login */
-        }
+    .card{
+      width:270px;
+      min-height:190px;
+      padding:22px;
+      border-radius:22px;
+      background:rgba(255,255,255,.10);
+      backdrop-filter:blur(14px);
+      cursor:pointer;
+      transition:.6s;
+      position:relative;
+    }
 
-        /* Left Side: Typography */
-        .hero-text {
-            flex: 1;
-        }
+    .card h3{
+      font-family:'Playfair Display',serif;
+      font-size:1.4rem;
+      margin-bottom:10px;
+    }
 
-        .hero-text h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            font-size: 2.5rem;
-            margin-bottom: -10px;
-        }
+    .card p{
+      font-size:.95rem;
+      line-height:1.6;
+      opacity:.95;
+    }
 
-        .hero-text h2 {
-            font-family: 'Dancing Script', cursive;
-            font-size: 5rem;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
+    .card:hover{
+      transform:translateY(-12px) scale(1.02);
+      box-shadow:0 20px 40px rgba(255,192,203,.2);
+    }
 
-        .hero-text .vijju-name {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-        }
+    .hidden{display:none;}
 
-        .sub-quote {
-            margin-top: 40px;
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            opacity: 0.8;
-        }
+    /* POPUP */
+    .popup{
+      position:fixed;inset:0;
+      background:rgba(0,0,0,.7);
+      display:none;align-items:center;justify-content:center;z-index:99;
+    }
 
-        /* Right Side: 3D Visuals */
-        .visual-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
+    .popup-box{
+      background:linear-gradient(135deg,#1a1a2e,#16213e);
+      padding:35px;
+      border-radius:25px;
+      max-width:90%;
+      text-align:center;
+      font-family:'Playfair Display',serif;
+      animation:scale .5s ease;
+    }
 
-        /* Crescent Moon */
-        .moon-crescent {
-            width: 300px;
-            height: 300px;
-            background: transparent;
-            border-radius: 50%;
-            box-shadow: 40px 40px 0 0 var(--silver); /* This creates the crescent shape */
-            transform: rotate(-45deg);
-            position: relative;
-            z-index: 5;
-            filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
-        }
+    @keyframes scale{from{transform:scale(.6)}to{transform:scale(1)}}
 
-        .star-decoration {
-            position: absolute;
-            top: 20%;
-            right: 0;
-            font-size: 4rem;
-            color: #d1d1d1;
-            filter: drop-shadow(0 0 15px white);
-        }
+    /* BUTTON */
+    button{
+      padding:14px 30px;
+      border:none;
+      border-radius:30px;
+      background:linear-gradient(135deg,#ffb6c1,#ffd1dc);
+      color:#000;
+      font-weight:600;
+      cursor:pointer;
+      transition:.3s;
+    }
 
-        /* The Podium */
-        .podium {
-            width: 450px;
-            height: 100px;
-            background: linear-gradient(to bottom, #d1d1d1, #707070);
-            border-radius: 50% / 30px;
-            margin-top: -30px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
-            z-index: 2;
-        }
+    button:hover{transform:scale(1.08)}
 
-        #cracker-box {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            display: none;
-            background: rgba(0,0,0,0.9);
-        }
-    </style>
-</head>
-<body>
+    /* GALLERY */
+    .gallery{
+      display:flex;
+      gap:18px;
+      overflow-x:auto;
+      padding-bottom:20px;
+    }
 
-<canvas id="star-canvas"></canvas>
-<div id="cracker-box"></div>
+    .gallery img{
+      height:220px;
+      border-radius:22px;
+    }
 
-<div id="login-overlay">
-    <h2 style="font-family: 'Cinzel'; opacity: 0.7;">ENTER PASSCODE</h2>
-    <input type="password" id="passCode" class="pass-input" placeholder="DD-MM-YYYY">
+  </style></head>
+<body><section class="hero">
+  <h1 class="love-title">Happy Birthday Vijjuluuuuu 🎀 🤍</h1>
+  <p class="love-sub">You are my moon in every dark night 🙂🌙✨</p>
+</section><section>
+  <h2 class="love-title" style="font-size:2.4rem">in this journey ✨</h2>
+  <div class="cards">
+    <div class="card" onclick="toggle(this)">
+      <h3>in school days</h3>
+      <p class="hidden">aa days lo spend vesey vibe excellent level maa... Chances gani untey definitely previous days ki velli malli nitho spend chesey time malli chestha 🫠🙃... Ee sari mistakes correct chesukunta... But reality lo avvadhu 🫠.. kani perledhu ley fullfill cheyadaniki Na vijjuluuuuuuu undhi ga ❤️🙃✨🎀</p>
+    </div><div class="card" onclick="toggle(this)">
+  <h3>your value 🌙</h3>
+  <p class="hidden">small example to describe your value ❤️🙃..if andaru niku against ga undi ..you are wrong ani chepthey... nenu ni kosam always stand tesukoni... nv right ani prove cheyadaniki na 100% efforts ni kosam pedatha maa 🙂 because you are my always 1st priority ❤️🩷🎀</p>
 </div>
 
-<main class="hero" id="hero-scene">
-    <div class="hero-text">
-        <h1>Happy</h1>
-        <h2>Birthday</h2>
-        <div class="vijju-name">vijjuluuuuu 🎀 🤍</div>
-        <p class="sub-quote">You are my moon in every dark night (✨)🌙✨</p>
-    </div>
+<div class="card" onclick="toggle(this)">
+  <h3>My Жена birthday 🫠✨</h3>
+  <p class="hidden">offcourse this day too special niku... every year try chesa cheppadaniki... this year happy ga chepthunna... Happy Birthday Dear Vijju ❤️🙃</p>
+</div>
 
-    <div class="visual-container">
-        <div class="moon-crescent" id="floatingMoon"></div>
-        <div class="star-decoration">⭐</div>
-        <div class="podium"></div>
-    </div>
-</main>
-
-<script>
-    const PASSWORD = "17-08-2026";
-    const passInput = document.getElementById('passCode');
-    const hero = document.getElementById('hero-scene');
-
-    // Authentication Logic
-    passInput.addEventListener('input', (e) => {
-        if(e.target.value === PASSWORD) {
-            gsap.to("#login-overlay", { opacity: 0, duration: 1, onComplete: () => {
-                document.getElementById('login-overlay').style.display = 'none';
-                revealHome();
-            }});
-        } else if(e.target.value.length >= 10) {
-            triggerCracker();
-        }
-    });
-
-    function triggerCracker() {
-        document.getElementById('cracker-box').style.display = 'block';
-        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        setTimeout(() => location.reload(), 3000);
-    }
-
-    function revealHome() {
-        hero.style.visibility = 'visible';
-        gsap.from(".hero-text h1, .hero-text h2, .vijju-name", { x: -100, opacity: 0, stagger: 0.2, duration: 1.5 });
-        gsap.from(".visual-container", { scale: 0, opacity: 0, duration: 2, ease: "back.out(1.7)" });
-        
-        // Moon Floating Effect
-        gsap.to("#floatingMoon", { y: -20, duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
-    }
-
-    // Twinkling Star Canvas
-    const canvas = document.getElementById('star-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const stars = [];
-    for(let i=0; i<150; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, o: Math.random(), s: Math.random()*0.02 });
-
-    function draw() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        stars.forEach(s => {
-            ctx.fillStyle = `rgba(255,255,255,${s.o})`;
-            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
-            s.o += s.s; if(s.o > 1 || s.o < 0) s.s = -s.s;
-        });
-        requestAnimationFrame(draw);
-    }
-    draw();
-</script>
-</body>
+  </div>
+</section><section>
+  <h2 class="love-title" style="font-size:2.3rem">challenge to my gold 💛</h2>
+  <button onclick="showPopup('congratulations viraajitha ❤️.. nv titan\'s heart geluchukunnav ✨🎀')">❤️ Heart</button>
+  <button onclick="showPopup('congratulations viraajitha 🌙.. nv titan ney geluchukunnav 😁')">🌙 Moon</button>
+</section><section>
+  <h2 class="love-title" style="font-size:2.2rem">A hidden promise</h2>
+  <p class="love-sub">naa kosam slow ga 50 clicks chey maa 🤌🏻.. second ki one click chey</p>
+  <button onclick="countClicks()">❤️</button>
+</section><section>
+  <h2 class="love-title" style="font-size:2.2rem">Reasons I love you</h2>
+  <div class="cards">
+    <div class="card">3yrs+ nunchi chusthunna maa... loyalty expect chesthunna 🙂🤍✨</div>
+    <div class="card">Nv na kallaki always oka Princess 👑</div>
+    <div class="card">you are my Vijju ❤️</div>
+  </div>
+</section><section>
+  <h2 class="love-title" style="font-size:2.2rem">Vijju Birthday</h2>
+  <h3 id="countdown"></h3>
+  <p class="love-sub">special day 🫶🏻</p>
+  <h3 id="countdown2"></h3>
+</section><section>
+  <h2 class="love-title" style="font-size:2.2rem">Captured Magic</h2>
+  <div class="gallery">
+    <img src="img1.jpg"><img src="img2.jpg"><img src="img3.jpg">
+  </div>
+</section><section>
+  <h2 class="love-title" style="font-size:2.2rem">if moon holiday tesukuntey..?</h2>
+  <p class="love-sub">Show your power to dark sky turn into beautiful stars sky</p>
+  <button onclick="addStar()">✨</button>
+  <div id="stars"></div>
+</section><div class="popup" id="popup" onclick="this.style.display='none'">
+  <div class="popup-box" id="popupText"></div>
+</div><script>
+let clicks=0;
+function toggle(card){card.querySelector('p').classList.toggle('hidden')}
+function showPopup(text){popup.style.display='flex';popupText.innerText=text;}
+function countClicks(){clicks++; if(clicks==50){showPopup('A hidden promise ❤️')}}
+function addStar(){const s=document.createElement('div'); s.innerText='⭐ Vijju'; document.getElementById('stars').appendChild(s);}
+function startCountdown(id,date){setInterval(()=>{const d=new Date(date)-new Date(); document.getElementById(id).innerText=d>0?Math.floor(d/86400000)+' days left':'I LOVE YOU ❤️';},1000)}
+startCountdown('countdown','2026-02-22');
+startCountdown('countdown2','2026-08-17');
+</script></body>
 </html>
-
