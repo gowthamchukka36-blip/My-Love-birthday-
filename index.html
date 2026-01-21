@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Vijju | My Moon</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.6.0/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --deep-purple: #1b1633;
+            --light-purple: #2b2450;
+            --silver: #e0e0e0;
+            --glow: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: radial-gradient(circle at center, var(--light-purple) 0%, var(--deep-purple) 100%);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Twinkling Star Canvas */
+        #star-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+        }
+
+        /* Password Overlay */
+        #login-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pass-input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid white;
+            color: white;
+            font-size: 1.8rem;
+            text-align: center;
+            outline: none;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 5px;
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        /* Main Desktop Content */
+        .hero {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10%;
+            visibility: hidden; /* Shown after login */
+        }
+
+        /* Left Side: Typography */
+        .hero-text {
+            flex: 1;
+        }
+
+        .hero-text h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 2.5rem;
+            margin-bottom: -10px;
+        }
+
+        .hero-text h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .hero-text .vijju-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .sub-quote {
+            margin-top: 40px;
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+
+        /* Right Side: 3D Visuals */
+        .visual-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Crescent Moon */
+        .moon-crescent {
+            width: 300px;
+            height: 300px;
+            background: transparent;
+            border-radius: 50%;
+            box-shadow: 40px 40px 0 0 var(--silver); /* This creates the crescent shape */
+            transform: rotate(-45deg);
+            position: relative;
+            z-index: 5;
+            filter: drop-shadow(0 0 30px rgba(255,255,255,0.4));
+        }
+
+        .star-decoration {
+            position: absolute;
+            top: 20%;
+            right: 0;
+            font-size: 4rem;
+            color: #d1d1d1;
+            filter: drop-shadow(0 0 15px white);
+        }
+
+        /* The Podium */
+        .podium {
+            width: 450px;
+            height: 100px;
+            background: linear-gradient(to bottom, #d1d1d1, #707070);
+            border-radius: 50% / 30px;
+            margin-top: -30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            z-index: 2;
+        }
+
+        #cracker-box {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: none;
+            background: rgba(0,0,0,0.9);
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="star-canvas"></canvas>
+<div id="cracker-box"></div>
+
+<div id="login-overlay">
+    <h2 style="font-family: 'Cinzel'; opacity: 0.7;">ENTER PASSCODE</h2>
+    <input type="password" id="passCode" class="pass-input" placeholder="DD-MM-YYYY">
+</div>
+
+<main class="hero" id="hero-scene">
+    <div class="hero-text">
+        <h1>Happy</h1>
+        <h2>Bir thday</h2>
+        <div class="vijju-name">vijjuluuuuu 🎀 🤍</div>
+        <p class="sub-quote">You are my moon in every dark night (✨)🌙✨</p>
+    </div>
+
+    <div class="visual-container">
+        <div class="moon-crescent" id="floatingMoon"></div>
+        <div class="star-decoration">⭐</div>
+        <div class="podium"></div>
+    </div>
+</main>
+
+<script>
+    const PASSWORD = "17-08-2026";
+    const passInput = document.getElementById('passCode');
+    const hero = document.getElementById('hero-scene');
+
+    // Authentication Logic
+    passInput.addEventListener('input', (e) => {
+        if(e.target.value === PASSWORD) {
+            gsap.to("#login-overlay", { opacity: 0, duration: 1, onComplete: () => {
+                document.getElementById('login-overlay').style.display = 'none';
+                revealHome();
+            }});
+        } else if(e.target.value.length >= 10) {
+            triggerCracker();
+        }
+    });
+
+    function triggerCracker() {
+        document.getElementById('cracker-box').style.display = 'block';
+        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        setTimeout(() => location.reload(), 3000);
+    }
+
+    function revealHome() {
+        hero.style.visibility = 'visible';
+        gsap.from(".hero-text h1, .hero-text h2, .vijju-name", { x: -100, opacity: 0, stagger: 0.2, duration: 1.5 });
+        gsap.from(".visual-container", { scale: 0, opacity: 0, duration: 2, ease: "back.out(1.7)" });
+        
+        // Moon Floating Effect
+        gsap.to("#floatingMoon", { y: -20, duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
+    }
+
+    // Twinkling Star Canvas
+    const canvas = document.getElementById('star-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const stars = [];
+    for(let i=0; i<150; i++) stars.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, r: Math.random()*1.5, o: Math.random(), s: Math.random()*0.02 });
+
+    function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        stars.forEach(s => {
+            ctx.fillStyle = `rgba(255,255,255,${s.o})`;
+            ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+            s.o += s.s; if(s.o > 1 || s.o < 0) s.s = -s.s;
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+</script>
+</body>
+</html>
+
